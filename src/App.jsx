@@ -12,7 +12,7 @@ function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const messagesEndRef = useRef(null);
   
-  const { speak, isSpeaking } = useSpeechSynthesis();
+  const { speak, stop, isSpeaking } = useSpeechSynthesis();
 
   // Simulated telemetry data
   const [cpu, setCpu] = useState(12);
@@ -91,10 +91,21 @@ function App() {
             <div className="corner-tr"></div>
             <div className="corner-bl"></div>
             <div className="header-title flex-center text-mono text-cyan">
-              <div className="sys-status">
-                [ <span className={isProcessing ? 'text-warning' : isSpeaking ? 'text-blue' : 'text-cyan'} style={{animation: 'flicker 2s infinite'}}>
-                  {isProcessing ? 'COMPUTING_RESPONSE' : isSpeaking ? 'AUDIO_TRANSMISSION' : 'ONLINE_AWAITING'}
-                </span> ]
+              <div className="sys-status" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <div>
+                  [ <span className={isProcessing ? 'text-warning' : isSpeaking ? 'text-blue' : 'text-cyan'} style={{animation: 'flicker 2s infinite'}}>
+                    {isProcessing ? 'COMPUTING_RESPONSE' : isSpeaking ? 'AUDIO_TRANSMISSION' : 'ONLINE_AWAITING'}
+                  </span> ]
+                </div>
+                {isSpeaking && (
+                  <button 
+                    onClick={stop} 
+                    className="stop-audio-btn text-mono text-alert"
+                    title="Terminate Audio Playback"
+                  >
+                    [X] ABORT_AUDIO
+                  </button>
+                )}
               </div>
               <span className="system-name" style={{fontSize: '1.5rem', textShadow: '0 0 15px var(--hud-cyan-glow)'}}>A.T.H.E.N.A.</span>
               <span className="version text-blue">V_1.0.0</span>
@@ -168,6 +179,22 @@ function App() {
             color: var(--hud-cyan-dim);
             letter-spacing: 3px;
             pointer-events: none;
+          }
+          .stop-audio-btn {
+            background: rgba(255, 50, 50, 0.1);
+            border: 1px solid var(--hud-alert);
+            color: var(--hud-alert);
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+            outline: none;
+          }
+          .stop-audio-btn:hover {
+            background: rgba(255, 50, 50, 0.3);
+            box-shadow: 0 0 15px rgba(255, 50, 50, 0.6);
+            color: #fff;
           }
           .messages-list {
             display: flex;
