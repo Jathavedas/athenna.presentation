@@ -57,8 +57,8 @@ export function MessageBubble({ message }) {
           font-weight: bold;
         }
         .message-body {
-          font-size: 1.15rem;
-          line-height: 1.7;
+          font-size: 1.05rem;
+          line-height: 1.6;
         }
         .user-message p {
           color: var(--hud-blue);
@@ -71,6 +71,23 @@ export function MessageBubble({ message }) {
         .markdown-body pre { border: 1px solid var(--hud-cyan-dim); padding: 15px; background: rgba(0,0,0,0.7); overflow-x: auto; margin: 10px 0; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
         .markdown-body ul, .markdown-body ol { margin-left: 20px; margin-bottom: 12px; }
         .markdown-body li { margin-bottom: 5px; }
+
+        /* --- RESPONSIVE PROTOCOLS --- */
+        @media (max-width: 768px) {
+          .message-content {
+            max-width: 95%;
+            padding: 10px 12px;
+          }
+          .message-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+            font-size: 0.75rem;
+          }
+          .message-body {
+            font-size: 0.95rem;
+          }
+        }
       `}</style>
     </div>
   );

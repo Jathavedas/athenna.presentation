@@ -167,6 +167,11 @@ export function InputArea({ onSendMessage, isProcessing }) {
 
         /* --- RESPONSIVE PROTOCOLS --- */
         @media (max-width: 768px) {
+          .input-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+          }
           .input-form {
             flex-wrap: wrap;
             gap: 10px;
