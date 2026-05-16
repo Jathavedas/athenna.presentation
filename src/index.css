@@ -1,0 +1,211 @@
+:root {
+  --bg-primary: #010409;
+  --hud-cyan: rgba(0, 240, 255, 0.85);
+  --hud-cyan-dim: rgba(0, 240, 255, 0.2);
+  --hud-cyan-glow: rgba(0, 240, 255, 0.5);
+  --hud-blue: rgba(0, 120, 255, 0.9);
+  --hud-blue-glow: rgba(0, 120, 255, 0.5);
+  --hud-warning: rgba(255, 180, 0, 0.9);
+  --hud-alert: rgba(255, 50, 50, 0.9);
+  
+  --font-hud: 'Share Tech Mono', 'Courier New', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--hud-cyan);
+  font-family: var(--font-hud);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-image: 
+    radial-gradient(circle at center, rgba(0, 80, 200, 0.1) 0%, transparent 50%),
+    linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+  background-size: 100% 100%, 30px 30px, 30px 30px;
+}
+
+/* Animations */
+@keyframes spin { 100% { transform: rotate(360deg); } }
+@keyframes spin-reverse { 100% { transform: rotate(-360deg); } }
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 24%, 55% { opacity: 0.4; }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 10px var(--hud-cyan-glow), inset 0 0 10px var(--hud-cyan-glow); }
+  50% { box-shadow: 0 0 25px var(--hud-cyan), inset 0 0 20px var(--hud-cyan); }
+}
+@keyframes scanline {
+  0% { transform: translateY(-100vh); }
+  100% { transform: translateY(100vh); }
+}
+
+/* Base Classes */
+.text-mono { font-family: var(--font-hud); letter-spacing: 1.5px; }
+.text-cyan { color: var(--hud-cyan); text-shadow: 0 0 8px var(--hud-cyan-glow); }
+.text-blue { color: var(--hud-blue); text-shadow: 0 0 8px var(--hud-blue-glow); }
+.text-warning { color: var(--hud-warning); text-shadow: 0 0 8px rgba(255, 180, 0, 0.5); }
+.text-alert { color: var(--hud-alert); text-shadow: 0 0 8px rgba(255, 50, 50, 0.5); }
+
+/* HUD Panels */
+.hud-panel {
+  background: rgba(0, 15, 30, 0.6);
+  border: 1px solid var(--hud-cyan-dim);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.05), inset 0 0 15px rgba(0, 240, 255, 0.05);
+  backdrop-filter: blur(8px);
+  position: relative;
+}
+
+/* Bracket Corners */
+.hud-panel::before, .hud-panel::after {
+  content: ''; position: absolute; width: 12px; height: 12px; border-color: var(--hud-cyan); border-style: solid;
+  box-shadow: 0 0 5px var(--hud-cyan-glow);
+}
+.hud-panel::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+.hud-panel::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+.hud-panel .corner-tr {
+  position: absolute; top: -1px; right: -1px; width: 12px; height: 12px; border-color: var(--hud-cyan); border-style: solid; border-width: 2px 2px 0 0; box-shadow: 0 0 5px var(--hud-cyan-glow);
+}
+.hud-panel .corner-bl {
+  position: absolute; bottom: -1px; left: -1px; width: 12px; height: 12px; border-color: var(--hud-cyan); border-style: solid; border-width: 0 0 2px 2px; box-shadow: 0 0 5px var(--hud-cyan-glow);
+}
+
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(0, 20, 40, 0.5); border-left: 1px solid var(--hud-cyan-dim); }
+::-webkit-scrollbar-thumb { background: var(--hud-cyan); border-radius: 3px; box-shadow: 0 0 10px var(--hud-cyan-glow); }
+
+/* Main Layout */
+.master-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  padding: 20px;
+  gap: 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.side-panel {
+  flex: 1;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.center-panel {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Center HUD Ring - Arc Reactor Style */
+.hud-ring-container {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px; height: 800px;
+  pointer-events: none;
+  z-index: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.hud-ring {
+  position: absolute;
+  border-radius: 50%;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.1), inset 0 0 30px rgba(0, 240, 255, 0.1);
+}
+.hud-ring.core {
+  width: 150px; height: 150px;
+  background: radial-gradient(circle, rgba(0,255,255,0.3) 0%, transparent 70%);
+  box-shadow: 0 0 50px rgba(0, 255, 255, 0.4);
+  animation: pulse-glow 3s infinite;
+}
+.hud-ring.inner {
+  width: 400px; height: 400px;
+  border: 2px dashed var(--hud-cyan-dim);
+  border-top: 4px solid var(--hud-cyan);
+  border-bottom: 4px solid var(--hud-cyan);
+  animation: spin 12s linear infinite;
+}
+.hud-ring.middle {
+  width: 550px; height: 550px;
+  border: 1px solid var(--hud-cyan-dim);
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(0,240,255,0.1) 60deg, transparent 120deg);
+  animation: spin-reverse 20s linear infinite;
+}
+.hud-ring.outer {
+  width: 750px; height: 750px;
+  border: 2px solid transparent;
+  border-left: 2px solid var(--hud-blue);
+  border-right: 2px solid var(--hud-blue);
+  animation: spin 30s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Scanline */
+.global-scanline {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 15vh;
+  background: linear-gradient(to bottom, transparent, rgba(0, 240, 255, 0.15), transparent);
+  animation: scanline 8s linear infinite;
+  pointer-events: none; z-index: 9999;
+}
+
+/* Decorative Data Stream */
+.data-box {
+  padding: 15px;
+  font-size: 0.8rem;
+}
+.data-box h3 {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--hud-cyan-dim);
+  padding-bottom: 5px;
+  text-transform: uppercase;
+  color: var(--hud-blue);
+  text-shadow: 0 0 5px var(--hud-blue-glow);
+}
+.data-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+.bar-container {
+  width: 100%;
+  height: 4px;
+  background: rgba(0,0,0,0.5);
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border: 1px solid var(--hud-cyan-dim);
+}
+.bar-fill {
+  height: 100%;
+  background: var(--hud-cyan);
+  box-shadow: 0 0 5px var(--hud-cyan-glow);
+}
+
+/* --- RESPONSIVE PROTOCOLS --- */
+@media (max-width: 1200px) {
+  .side-panel {
+    display: none;
+  }
+  .hud-ring-container {
+    transform: translate(-50%, -50%) scale(0.7);
+  }
+}
+
+@media (max-width: 768px) {
+  .master-container {
+    padding: 10px;
+  }
+  .hud-ring-container {
+    transform: translate(-50%, -50%) scale(0.4);
+  }
+}
