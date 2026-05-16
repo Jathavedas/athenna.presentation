@@ -173,19 +173,22 @@ export function InputArea({ onSendMessage, isProcessing }) {
             gap: 5px;
           }
           .input-form {
-            flex-wrap: wrap;
-            gap: 10px;
+            flex-wrap: nowrap;
+            gap: 8px;
           }
           .command-input {
-            order: 1;
-            flex-basis: 100%;
+            font-size: 0.9rem;
+            padding: 10px 12px;
+            min-width: 0; /* Prevents flex item from overflowing */
           }
           .mic-btn {
-            order: 2;
+            width: 38px; height: 38px;
+            flex-shrink: 0;
           }
           .send-btn {
-            order: 3;
-            flex: 1;
+            padding: 10px 15px;
+            font-size: 0.85rem;
+            flex-shrink: 0;
           }
         }
       `}</style>
