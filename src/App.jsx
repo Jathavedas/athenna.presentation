@@ -107,7 +107,7 @@ function App() {
                   </button>
                 )}
               </div>
-              <span className="system-name" style={{fontSize: '1.5rem', textShadow: '0 0 15px var(--hud-cyan-glow)'}}>A.T.H.E.N.A.</span>
+              <span className="system-name" style={{textShadow: '0 0 15px var(--hud-cyan-glow)'}}>A.T.H.E.N.A.</span>
               <span className="version text-blue">V_1.0.0</span>
             </div>
           </header>
@@ -162,6 +162,9 @@ function App() {
             align-items: center;
             font-weight: bold;
             letter-spacing: 4px;
+          }
+          .system-name {
+            font-size: 1.5rem;
           }
           .chat-container {
             flex: 1;
@@ -219,10 +222,15 @@ function App() {
 
           @media (max-width: 768px) {
             .header-title {
-              flex-direction: column;
-              align-items: flex-start;
-              gap: 10px;
-              font-size: 0.9rem;
+              flex-direction: row;
+              flex-wrap: wrap;
+              align-items: center;
+              justify-content: space-between;
+              gap: 8px;
+              font-size: 0.8rem;
+            }
+            .system-name {
+              font-size: 1.2rem;
             }
             .app-header {
               padding: 15px;
