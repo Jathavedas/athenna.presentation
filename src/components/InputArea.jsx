@@ -7,7 +7,9 @@ export function InputArea({ onSendMessage, isProcessing }) {
 
   const handleInputChange = (e) => {
     setInput(e.target.value);
-    sessionPrefixRef.current = e.target.value;
+    if (!isListening) {
+      sessionPrefixRef.current = e.target.value;
+    }
   };
 
   const handleTranscript = ({ finalTranscript, interimTranscript }) => {
@@ -59,7 +61,7 @@ export function InputArea({ onSendMessage, isProcessing }) {
           onChange={handleInputChange}
           placeholder={isListening ? "TRANSMITTING AUDIO SIGNAL..." : "ENTER COMMAND DIRECTIVE..."}
           className="command-input text-mono text-cyan"
-          disabled={isProcessing}
+          disabled={isProcessing || isListening}
           autoFocus
         />
         
@@ -140,6 +142,13 @@ export function InputArea({ onSendMessage, isProcessing }) {
         .command-input::placeholder {
           color: rgba(0, 240, 255, 0.3);
           letter-spacing: 1px;
+        }
+        .command-input:disabled {
+          opacity: 1;
+          color: var(--hud-cyan);
+          background: rgba(0, 15, 30, 0.8);
+          border-color: rgba(0, 240, 255, 0.4);
+          cursor: not-allowed;
         }
         
         .send-btn {
