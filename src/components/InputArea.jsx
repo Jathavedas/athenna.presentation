@@ -3,33 +3,33 @@ import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 
 export function InputArea({ onSendMessage, isProcessing }) {
   const [input, setInput] = useState('');
-  const baseInputRef = useRef('');
+  const sessionPrefixRef = useRef('');
 
   const handleInputChange = (e) => {
     setInput(e.target.value);
-    baseInputRef.current = e.target.value;
+    sessionPrefixRef.current = e.target.value;
   };
 
   const handleTranscript = ({ finalTranscript, interimTranscript }) => {
-    if (finalTranscript) {
-      const prefix = baseInputRef.current ? baseInputRef.current + ' ' : '';
-      baseInputRef.current = prefix + finalTranscript;
-    }
-    
-    const prefix = baseInputRef.current ? baseInputRef.current + ' ' : '';
-    const currentDisplay = interimTranscript ? prefix + interimTranscript : baseInputRef.current;
-    
-    setInput(currentDisplay);
+    const prefix = sessionPrefixRef.current ? sessionPrefixRef.current + ' ' : '';
+    setInput(prefix + finalTranscript + interimTranscript);
   };
 
   const { isListening, toggleListening, isSupported } = useSpeechRecognition(handleTranscript);
+
+  const handleToggleMic = () => {
+    if (!isListening) {
+      sessionPrefixRef.current = input;
+    }
+    toggleListening();
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!input.trim() || isProcessing) return;
     onSendMessage(input.trim());
     setInput('');
-    baseInputRef.current = '';
+    sessionPrefixRef.current = '';
   };
 
   return (
@@ -46,7 +46,7 @@ export function InputArea({ onSendMessage, isProcessing }) {
       <form onSubmit={handleSubmit} className="input-form">
         <button 
           type="button" 
-          onClick={toggleListening}
+          onClick={handleToggleMic}
           className={`mic-btn ${isListening ? 'listening' : ''}`}
           disabled={!isSupported || isProcessing}
         >
