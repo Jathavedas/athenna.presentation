@@ -4,6 +4,7 @@ import { InputArea } from './components/InputArea';
 import { generateAthenaResponse } from './lib/gemini';
 import { useSpeechSynthesis } from './hooks/useSpeechSynthesis';
 import { Background3D } from './components/Background3D';
+import { SmartHomePanel } from './components/SmartHomePanel';
 
 function App() {
   const [messages, setMessages] = useState([
@@ -39,6 +40,12 @@ function App() {
   }, [messages, isProcessing]);
 
   const handleSendMessage = async (content) => {
+    // Intercept STOP commands for speech synthesis
+    if (/^(stop|quiet|shut up|silence|abort|halt)$/i.test(content.trim().replace(/[.,!]$/, ''))) {
+      stop();
+      return;
+    }
+
     const userMsg = { role: 'user', content };
     setMessages(prev => [...prev, userMsg]);
     setIsProcessing(true);
@@ -127,7 +134,7 @@ function App() {
           </div>
 
           <footer className="app-footer">
-            <InputArea onSendMessage={handleSendMessage} isProcessing={isProcessing} />
+            <InputArea onSendMessage={handleSendMessage} isProcessing={isProcessing} isSpeaking={isSpeaking} />
           </footer>
         </main>
 
@@ -142,12 +149,11 @@ function App() {
               <span className="text-blue">[OK] MEMORY_ALLOCATED</span><br/>
               &gt; ESTABLISH_E-COMMERCE_LINK<br/>
               <span className="text-blue">[OK] API_GATEWAY_SECURED</span><br/>
-              &gt; CALIBRATE_HARDWARE_PREPRESS<br/>
-              <span className="text-blue">[OK] SKYCUT_SYNCED</span><br/>
               &gt; AWAIT_USER_VOICE_INPUT<br/>
               <span className="text-warning">[PENDING]</span>
             </div>
           </div>
+          <SmartHomePanel />
         </aside>
 
         <style>{`

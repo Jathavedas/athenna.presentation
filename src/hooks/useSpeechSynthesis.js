@@ -31,11 +31,20 @@ export function useSpeechSynthesis() {
     // Matches sentences ending in . ! ? or newlines
     const chunks = cleanText.match(/[^.!?\n]+[.!?\n]+/g) || [cleanText];
     
-    const preferredVoice = voices.find(v => 
-      v.name.includes('Google UK English Female') || 
-      v.name.includes('Microsoft Hazel') ||
-      (v.lang === 'en-GB' && v.name.includes('Female'))
-    ) || voices.find(v => v.lang === 'en-US') || voices[0];
+    const isMalayalam = /[\u0D00-\u0D7F]/.test(cleanText);
+
+    let preferredVoice;
+    if (isMalayalam) {
+      preferredVoice = voices.find(v => v.lang === 'ml-IN') || voices.find(v => v.lang.startsWith('ml'));
+    } else {
+      preferredVoice = voices.find(v => 
+        v.name.includes('Google UK English Female') || 
+        v.name.includes('Microsoft Hazel') ||
+        (v.lang === 'en-GB' && v.name.includes('Female'))
+      ) || voices.find(v => v.lang === 'en-US');
+    }
+
+    if (!preferredVoice) preferredVoice = voices[0];
 
     const playNext = () => {
       if (utteranceQueue.current.length === 0) {
@@ -48,8 +57,12 @@ export function useSpeechSynthesis() {
       
       if (preferredVoice) {
         utterance.voice = preferredVoice;
+        utterance.lang = preferredVoice.lang;
+      } else if (isMalayalam) {
+        utterance.lang = 'ml-IN';
       }
-      utterance.rate = 1.05;
+
+      utterance.rate = isMalayalam ? 0.9 : 1.05; // Malayalam often sounds better slightly slower
       utterance.pitch = 0.9;
 
       utterance.onend = playNext;
